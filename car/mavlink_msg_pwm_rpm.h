@@ -24,16 +24,16 @@ typedef struct __mavlink_pwm_rpm_t {
     12, \
     "PWM_RPM", \
     2, \
-    {  { "pwm", NULL, MAVLINK_TYPE_INT16_T, 0, 4, offsetof(mavlink_pwm_rpm_t, pwm) }, \
-         { "rpm", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_pwm_rpm_t, rpm) }, \
+    {  { "rpm", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_pwm_rpm_t, rpm) }, \
+         { "pwm", NULL, MAVLINK_TYPE_INT16_T, 0, 4, offsetof(mavlink_pwm_rpm_t, pwm) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_PWM_RPM { \
     "PWM_RPM", \
     2, \
-    {  { "pwm", NULL, MAVLINK_TYPE_INT16_T, 0, 4, offsetof(mavlink_pwm_rpm_t, pwm) }, \
-         { "rpm", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_pwm_rpm_t, rpm) }, \
+    {  { "rpm", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_pwm_rpm_t, rpm) }, \
+         { "pwm", NULL, MAVLINK_TYPE_INT16_T, 0, 4, offsetof(mavlink_pwm_rpm_t, pwm) }, \
          } \
 }
 #endif
@@ -44,12 +44,12 @@ typedef struct __mavlink_pwm_rpm_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param pwm  
  * @param rpm  Revolution(s) Per Minute
+ * @param pwm  
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_pwm_rpm_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               int16_t pwm, float rpm)
+                               float rpm, int16_t pwm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_PWM_RPM_LEN];
@@ -75,13 +75,13 @@ static inline uint16_t mavlink_msg_pwm_rpm_pack(uint8_t system_id, uint8_t compo
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param pwm  
  * @param rpm  Revolution(s) Per Minute
+ * @param pwm  
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_pwm_rpm_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   int16_t pwm,float rpm)
+                                   float rpm,int16_t pwm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_PWM_RPM_LEN];
@@ -111,7 +111,7 @@ static inline uint16_t mavlink_msg_pwm_rpm_pack_chan(uint8_t system_id, uint8_t 
  */
 static inline uint16_t mavlink_msg_pwm_rpm_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_pwm_rpm_t* pwm_rpm)
 {
-    return mavlink_msg_pwm_rpm_pack(system_id, component_id, msg, pwm_rpm->pwm, pwm_rpm->rpm);
+    return mavlink_msg_pwm_rpm_pack(system_id, component_id, msg, pwm_rpm->rpm, pwm_rpm->pwm);
 }
 
 /**
@@ -125,19 +125,19 @@ static inline uint16_t mavlink_msg_pwm_rpm_encode(uint8_t system_id, uint8_t com
  */
 static inline uint16_t mavlink_msg_pwm_rpm_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_pwm_rpm_t* pwm_rpm)
 {
-    return mavlink_msg_pwm_rpm_pack_chan(system_id, component_id, chan, msg, pwm_rpm->pwm, pwm_rpm->rpm);
+    return mavlink_msg_pwm_rpm_pack_chan(system_id, component_id, chan, msg, pwm_rpm->rpm, pwm_rpm->pwm);
 }
 
 /**
  * @brief Send a pwm_rpm message
  * @param chan MAVLink channel to send the message
  *
- * @param pwm  
  * @param rpm  Revolution(s) Per Minute
+ * @param pwm  
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_pwm_rpm_send(mavlink_channel_t chan, int16_t pwm, float rpm)
+static inline void mavlink_msg_pwm_rpm_send(mavlink_channel_t chan, float rpm, int16_t pwm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_PWM_RPM_LEN];
@@ -162,7 +162,7 @@ static inline void mavlink_msg_pwm_rpm_send(mavlink_channel_t chan, int16_t pwm,
 static inline void mavlink_msg_pwm_rpm_send_struct(mavlink_channel_t chan, const mavlink_pwm_rpm_t* pwm_rpm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    mavlink_msg_pwm_rpm_send(chan, pwm_rpm->pwm, pwm_rpm->rpm);
+    mavlink_msg_pwm_rpm_send(chan, pwm_rpm->rpm, pwm_rpm->pwm);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PWM_RPM, (const char *)pwm_rpm, MAVLINK_MSG_ID_PWM_RPM_MIN_LEN, MAVLINK_MSG_ID_PWM_RPM_LEN, MAVLINK_MSG_ID_PWM_RPM_CRC);
 #endif
@@ -176,7 +176,7 @@ static inline void mavlink_msg_pwm_rpm_send_struct(mavlink_channel_t chan, const
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_pwm_rpm_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  int16_t pwm, float rpm)
+static inline void mavlink_msg_pwm_rpm_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  float rpm, int16_t pwm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
@@ -200,16 +200,6 @@ static inline void mavlink_msg_pwm_rpm_send_buf(mavlink_message_t *msgbuf, mavli
 
 
 /**
- * @brief Get field pwm from pwm_rpm message
- *
- * @return  
- */
-static inline int16_t mavlink_msg_pwm_rpm_get_pwm(const mavlink_message_t* msg)
-{
-    return _MAV_RETURN_int16_t(msg,  4);
-}
-
-/**
  * @brief Get field rpm from pwm_rpm message
  *
  * @return  Revolution(s) Per Minute
@@ -217,6 +207,16 @@ static inline int16_t mavlink_msg_pwm_rpm_get_pwm(const mavlink_message_t* msg)
 static inline float mavlink_msg_pwm_rpm_get_rpm(const mavlink_message_t* msg)
 {
     return _MAV_RETURN_float(msg,  0);
+}
+
+/**
+ * @brief Get field pwm from pwm_rpm message
+ *
+ * @return  
+ */
+static inline int16_t mavlink_msg_pwm_rpm_get_pwm(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_int16_t(msg,  4);
 }
 
 /**
