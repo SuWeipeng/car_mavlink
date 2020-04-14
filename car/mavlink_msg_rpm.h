@@ -5,17 +5,18 @@
 
 MAVPACKED(
 typedef struct __mavlink_rpm_t {
+ uint32_t tick; /*<  */
  float rpm_target; /*<  TARGET-Revolution(s) Per Minute*/
  float rpm; /*<  MEASUREMENT-Revolution(s) Per Minute*/
 }) mavlink_rpm_t;
 
-#define MAVLINK_MSG_ID_RPM_LEN 8
-#define MAVLINK_MSG_ID_RPM_MIN_LEN 8
-#define MAVLINK_MSG_ID_14_LEN 8
-#define MAVLINK_MSG_ID_14_MIN_LEN 8
+#define MAVLINK_MSG_ID_RPM_LEN 12
+#define MAVLINK_MSG_ID_RPM_MIN_LEN 12
+#define MAVLINK_MSG_ID_14_LEN 12
+#define MAVLINK_MSG_ID_14_MIN_LEN 12
 
-#define MAVLINK_MSG_ID_RPM_CRC 240
-#define MAVLINK_MSG_ID_14_CRC 240
+#define MAVLINK_MSG_ID_RPM_CRC 170
+#define MAVLINK_MSG_ID_14_CRC 170
 
 
 
@@ -23,17 +24,19 @@ typedef struct __mavlink_rpm_t {
 #define MAVLINK_MESSAGE_INFO_RPM { \
     14, \
     "RPM", \
-    2, \
-    {  { "rpm_target", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_rpm_t, rpm_target) }, \
-         { "rpm", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_rpm_t, rpm) }, \
+    3, \
+    {  { "tick", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_rpm_t, tick) }, \
+         { "rpm_target", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_rpm_t, rpm_target) }, \
+         { "rpm", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_rpm_t, rpm) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_RPM { \
     "RPM", \
-    2, \
-    {  { "rpm_target", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_rpm_t, rpm_target) }, \
-         { "rpm", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_rpm_t, rpm) }, \
+    3, \
+    {  { "tick", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_rpm_t, tick) }, \
+         { "rpm_target", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_rpm_t, rpm_target) }, \
+         { "rpm", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_rpm_t, rpm) }, \
          } \
 }
 #endif
@@ -44,21 +47,24 @@ typedef struct __mavlink_rpm_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
+ * @param tick  
  * @param rpm_target  TARGET-Revolution(s) Per Minute
  * @param rpm  MEASUREMENT-Revolution(s) Per Minute
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_rpm_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               float rpm_target, float rpm)
+                               uint32_t tick, float rpm_target, float rpm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_RPM_LEN];
-    _mav_put_float(buf, 0, rpm_target);
-    _mav_put_float(buf, 4, rpm);
+    _mav_put_uint32_t(buf, 0, tick);
+    _mav_put_float(buf, 4, rpm_target);
+    _mav_put_float(buf, 8, rpm);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_RPM_LEN);
 #else
     mavlink_rpm_t packet;
+    packet.tick = tick;
     packet.rpm_target = rpm_target;
     packet.rpm = rpm;
 
@@ -75,22 +81,25 @@ static inline uint16_t mavlink_msg_rpm_pack(uint8_t system_id, uint8_t component
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
+ * @param tick  
  * @param rpm_target  TARGET-Revolution(s) Per Minute
  * @param rpm  MEASUREMENT-Revolution(s) Per Minute
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_rpm_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   float rpm_target,float rpm)
+                                   uint32_t tick,float rpm_target,float rpm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_RPM_LEN];
-    _mav_put_float(buf, 0, rpm_target);
-    _mav_put_float(buf, 4, rpm);
+    _mav_put_uint32_t(buf, 0, tick);
+    _mav_put_float(buf, 4, rpm_target);
+    _mav_put_float(buf, 8, rpm);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_RPM_LEN);
 #else
     mavlink_rpm_t packet;
+    packet.tick = tick;
     packet.rpm_target = rpm_target;
     packet.rpm = rpm;
 
@@ -111,7 +120,7 @@ static inline uint16_t mavlink_msg_rpm_pack_chan(uint8_t system_id, uint8_t comp
  */
 static inline uint16_t mavlink_msg_rpm_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_rpm_t* rpm)
 {
-    return mavlink_msg_rpm_pack(system_id, component_id, msg, rpm->rpm_target, rpm->rpm);
+    return mavlink_msg_rpm_pack(system_id, component_id, msg, rpm->tick, rpm->rpm_target, rpm->rpm);
 }
 
 /**
@@ -125,28 +134,31 @@ static inline uint16_t mavlink_msg_rpm_encode(uint8_t system_id, uint8_t compone
  */
 static inline uint16_t mavlink_msg_rpm_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_rpm_t* rpm)
 {
-    return mavlink_msg_rpm_pack_chan(system_id, component_id, chan, msg, rpm->rpm_target, rpm->rpm);
+    return mavlink_msg_rpm_pack_chan(system_id, component_id, chan, msg, rpm->tick, rpm->rpm_target, rpm->rpm);
 }
 
 /**
  * @brief Send a rpm message
  * @param chan MAVLink channel to send the message
  *
+ * @param tick  
  * @param rpm_target  TARGET-Revolution(s) Per Minute
  * @param rpm  MEASUREMENT-Revolution(s) Per Minute
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_rpm_send(mavlink_channel_t chan, float rpm_target, float rpm)
+static inline void mavlink_msg_rpm_send(mavlink_channel_t chan, uint32_t tick, float rpm_target, float rpm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_RPM_LEN];
-    _mav_put_float(buf, 0, rpm_target);
-    _mav_put_float(buf, 4, rpm);
+    _mav_put_uint32_t(buf, 0, tick);
+    _mav_put_float(buf, 4, rpm_target);
+    _mav_put_float(buf, 8, rpm);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RPM, buf, MAVLINK_MSG_ID_RPM_MIN_LEN, MAVLINK_MSG_ID_RPM_LEN, MAVLINK_MSG_ID_RPM_CRC);
 #else
     mavlink_rpm_t packet;
+    packet.tick = tick;
     packet.rpm_target = rpm_target;
     packet.rpm = rpm;
 
@@ -162,7 +174,7 @@ static inline void mavlink_msg_rpm_send(mavlink_channel_t chan, float rpm_target
 static inline void mavlink_msg_rpm_send_struct(mavlink_channel_t chan, const mavlink_rpm_t* rpm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    mavlink_msg_rpm_send(chan, rpm->rpm_target, rpm->rpm);
+    mavlink_msg_rpm_send(chan, rpm->tick, rpm->rpm_target, rpm->rpm);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RPM, (const char *)rpm, MAVLINK_MSG_ID_RPM_MIN_LEN, MAVLINK_MSG_ID_RPM_LEN, MAVLINK_MSG_ID_RPM_CRC);
 #endif
@@ -176,16 +188,18 @@ static inline void mavlink_msg_rpm_send_struct(mavlink_channel_t chan, const mav
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_rpm_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  float rpm_target, float rpm)
+static inline void mavlink_msg_rpm_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint32_t tick, float rpm_target, float rpm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
-    _mav_put_float(buf, 0, rpm_target);
-    _mav_put_float(buf, 4, rpm);
+    _mav_put_uint32_t(buf, 0, tick);
+    _mav_put_float(buf, 4, rpm_target);
+    _mav_put_float(buf, 8, rpm);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RPM, buf, MAVLINK_MSG_ID_RPM_MIN_LEN, MAVLINK_MSG_ID_RPM_LEN, MAVLINK_MSG_ID_RPM_CRC);
 #else
     mavlink_rpm_t *packet = (mavlink_rpm_t *)msgbuf;
+    packet->tick = tick;
     packet->rpm_target = rpm_target;
     packet->rpm = rpm;
 
@@ -200,13 +214,23 @@ static inline void mavlink_msg_rpm_send_buf(mavlink_message_t *msgbuf, mavlink_c
 
 
 /**
+ * @brief Get field tick from rpm message
+ *
+ * @return  
+ */
+static inline uint32_t mavlink_msg_rpm_get_tick(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_uint32_t(msg,  0);
+}
+
+/**
  * @brief Get field rpm_target from rpm message
  *
  * @return  TARGET-Revolution(s) Per Minute
  */
 static inline float mavlink_msg_rpm_get_rpm_target(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  0);
+    return _MAV_RETURN_float(msg,  4);
 }
 
 /**
@@ -216,7 +240,7 @@ static inline float mavlink_msg_rpm_get_rpm_target(const mavlink_message_t* msg)
  */
 static inline float mavlink_msg_rpm_get_rpm(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  4);
+    return _MAV_RETURN_float(msg,  8);
 }
 
 /**
@@ -228,6 +252,7 @@ static inline float mavlink_msg_rpm_get_rpm(const mavlink_message_t* msg)
 static inline void mavlink_msg_rpm_decode(const mavlink_message_t* msg, mavlink_rpm_t* rpm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    rpm->tick = mavlink_msg_rpm_get_tick(msg);
     rpm->rpm_target = mavlink_msg_rpm_get_rpm_target(msg);
     rpm->rpm = mavlink_msg_rpm_get_rpm(msg);
 #else
