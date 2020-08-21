@@ -8,15 +8,18 @@ typedef struct __mavlink_velocity_t {
  float vel_x; /*<  m/s*/
  float vel_y; /*<  m/s*/
  float rad_z; /*<  rad/s*/
+ float ext_1; /*<  rad/s*/
+ float ext_2; /*<  rad/s*/
+ uint32_t ext_3; /*<  rad/s*/
 }) mavlink_velocity_t;
 
-#define MAVLINK_MSG_ID_VELOCITY_LEN 12
-#define MAVLINK_MSG_ID_VELOCITY_MIN_LEN 12
-#define MAVLINK_MSG_ID_10_LEN 12
-#define MAVLINK_MSG_ID_10_MIN_LEN 12
+#define MAVLINK_MSG_ID_VELOCITY_LEN 24
+#define MAVLINK_MSG_ID_VELOCITY_MIN_LEN 24
+#define MAVLINK_MSG_ID_10_LEN 24
+#define MAVLINK_MSG_ID_10_MIN_LEN 24
 
-#define MAVLINK_MSG_ID_VELOCITY_CRC 54
-#define MAVLINK_MSG_ID_10_CRC 54
+#define MAVLINK_MSG_ID_VELOCITY_CRC 234
+#define MAVLINK_MSG_ID_10_CRC 234
 
 
 
@@ -24,19 +27,25 @@ typedef struct __mavlink_velocity_t {
 #define MAVLINK_MESSAGE_INFO_VELOCITY { \
     10, \
     "VELOCITY", \
-    3, \
+    6, \
     {  { "vel_x", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_velocity_t, vel_x) }, \
          { "vel_y", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_velocity_t, vel_y) }, \
          { "rad_z", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_velocity_t, rad_z) }, \
+         { "ext_1", NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(mavlink_velocity_t, ext_1) }, \
+         { "ext_2", NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(mavlink_velocity_t, ext_2) }, \
+         { "ext_3", NULL, MAVLINK_TYPE_UINT32_T, 0, 20, offsetof(mavlink_velocity_t, ext_3) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_VELOCITY { \
     "VELOCITY", \
-    3, \
+    6, \
     {  { "vel_x", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_velocity_t, vel_x) }, \
          { "vel_y", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_velocity_t, vel_y) }, \
          { "rad_z", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_velocity_t, rad_z) }, \
+         { "ext_1", NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(mavlink_velocity_t, ext_1) }, \
+         { "ext_2", NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(mavlink_velocity_t, ext_2) }, \
+         { "ext_3", NULL, MAVLINK_TYPE_UINT32_T, 0, 20, offsetof(mavlink_velocity_t, ext_3) }, \
          } \
 }
 #endif
@@ -50,16 +59,22 @@ typedef struct __mavlink_velocity_t {
  * @param vel_x  m/s
  * @param vel_y  m/s
  * @param rad_z  rad/s
+ * @param ext_1  rad/s
+ * @param ext_2  rad/s
+ * @param ext_3  rad/s
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_velocity_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               float vel_x, float vel_y, float rad_z)
+                               float vel_x, float vel_y, float rad_z, float ext_1, float ext_2, uint32_t ext_3)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_VELOCITY_LEN];
     _mav_put_float(buf, 0, vel_x);
     _mav_put_float(buf, 4, vel_y);
     _mav_put_float(buf, 8, rad_z);
+    _mav_put_float(buf, 12, ext_1);
+    _mav_put_float(buf, 16, ext_2);
+    _mav_put_uint32_t(buf, 20, ext_3);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_VELOCITY_LEN);
 #else
@@ -67,6 +82,9 @@ static inline uint16_t mavlink_msg_velocity_pack(uint8_t system_id, uint8_t comp
     packet.vel_x = vel_x;
     packet.vel_y = vel_y;
     packet.rad_z = rad_z;
+    packet.ext_1 = ext_1;
+    packet.ext_2 = ext_2;
+    packet.ext_3 = ext_3;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_VELOCITY_LEN);
 #endif
@@ -84,17 +102,23 @@ static inline uint16_t mavlink_msg_velocity_pack(uint8_t system_id, uint8_t comp
  * @param vel_x  m/s
  * @param vel_y  m/s
  * @param rad_z  rad/s
+ * @param ext_1  rad/s
+ * @param ext_2  rad/s
+ * @param ext_3  rad/s
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_velocity_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   float vel_x,float vel_y,float rad_z)
+                                   float vel_x,float vel_y,float rad_z,float ext_1,float ext_2,uint32_t ext_3)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_VELOCITY_LEN];
     _mav_put_float(buf, 0, vel_x);
     _mav_put_float(buf, 4, vel_y);
     _mav_put_float(buf, 8, rad_z);
+    _mav_put_float(buf, 12, ext_1);
+    _mav_put_float(buf, 16, ext_2);
+    _mav_put_uint32_t(buf, 20, ext_3);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_VELOCITY_LEN);
 #else
@@ -102,6 +126,9 @@ static inline uint16_t mavlink_msg_velocity_pack_chan(uint8_t system_id, uint8_t
     packet.vel_x = vel_x;
     packet.vel_y = vel_y;
     packet.rad_z = rad_z;
+    packet.ext_1 = ext_1;
+    packet.ext_2 = ext_2;
+    packet.ext_3 = ext_3;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_VELOCITY_LEN);
 #endif
@@ -120,7 +147,7 @@ static inline uint16_t mavlink_msg_velocity_pack_chan(uint8_t system_id, uint8_t
  */
 static inline uint16_t mavlink_msg_velocity_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_velocity_t* velocity)
 {
-    return mavlink_msg_velocity_pack(system_id, component_id, msg, velocity->vel_x, velocity->vel_y, velocity->rad_z);
+    return mavlink_msg_velocity_pack(system_id, component_id, msg, velocity->vel_x, velocity->vel_y, velocity->rad_z, velocity->ext_1, velocity->ext_2, velocity->ext_3);
 }
 
 /**
@@ -134,7 +161,7 @@ static inline uint16_t mavlink_msg_velocity_encode(uint8_t system_id, uint8_t co
  */
 static inline uint16_t mavlink_msg_velocity_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_velocity_t* velocity)
 {
-    return mavlink_msg_velocity_pack_chan(system_id, component_id, chan, msg, velocity->vel_x, velocity->vel_y, velocity->rad_z);
+    return mavlink_msg_velocity_pack_chan(system_id, component_id, chan, msg, velocity->vel_x, velocity->vel_y, velocity->rad_z, velocity->ext_1, velocity->ext_2, velocity->ext_3);
 }
 
 /**
@@ -144,16 +171,22 @@ static inline uint16_t mavlink_msg_velocity_encode_chan(uint8_t system_id, uint8
  * @param vel_x  m/s
  * @param vel_y  m/s
  * @param rad_z  rad/s
+ * @param ext_1  rad/s
+ * @param ext_2  rad/s
+ * @param ext_3  rad/s
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_velocity_send(mavlink_channel_t chan, float vel_x, float vel_y, float rad_z)
+static inline void mavlink_msg_velocity_send(mavlink_channel_t chan, float vel_x, float vel_y, float rad_z, float ext_1, float ext_2, uint32_t ext_3)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_VELOCITY_LEN];
     _mav_put_float(buf, 0, vel_x);
     _mav_put_float(buf, 4, vel_y);
     _mav_put_float(buf, 8, rad_z);
+    _mav_put_float(buf, 12, ext_1);
+    _mav_put_float(buf, 16, ext_2);
+    _mav_put_uint32_t(buf, 20, ext_3);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_VELOCITY, buf, MAVLINK_MSG_ID_VELOCITY_MIN_LEN, MAVLINK_MSG_ID_VELOCITY_LEN, MAVLINK_MSG_ID_VELOCITY_CRC);
 #else
@@ -161,6 +194,9 @@ static inline void mavlink_msg_velocity_send(mavlink_channel_t chan, float vel_x
     packet.vel_x = vel_x;
     packet.vel_y = vel_y;
     packet.rad_z = rad_z;
+    packet.ext_1 = ext_1;
+    packet.ext_2 = ext_2;
+    packet.ext_3 = ext_3;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_VELOCITY, (const char *)&packet, MAVLINK_MSG_ID_VELOCITY_MIN_LEN, MAVLINK_MSG_ID_VELOCITY_LEN, MAVLINK_MSG_ID_VELOCITY_CRC);
 #endif
@@ -174,7 +210,7 @@ static inline void mavlink_msg_velocity_send(mavlink_channel_t chan, float vel_x
 static inline void mavlink_msg_velocity_send_struct(mavlink_channel_t chan, const mavlink_velocity_t* velocity)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    mavlink_msg_velocity_send(chan, velocity->vel_x, velocity->vel_y, velocity->rad_z);
+    mavlink_msg_velocity_send(chan, velocity->vel_x, velocity->vel_y, velocity->rad_z, velocity->ext_1, velocity->ext_2, velocity->ext_3);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_VELOCITY, (const char *)velocity, MAVLINK_MSG_ID_VELOCITY_MIN_LEN, MAVLINK_MSG_ID_VELOCITY_LEN, MAVLINK_MSG_ID_VELOCITY_CRC);
 #endif
@@ -188,13 +224,16 @@ static inline void mavlink_msg_velocity_send_struct(mavlink_channel_t chan, cons
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_velocity_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  float vel_x, float vel_y, float rad_z)
+static inline void mavlink_msg_velocity_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  float vel_x, float vel_y, float rad_z, float ext_1, float ext_2, uint32_t ext_3)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
     _mav_put_float(buf, 0, vel_x);
     _mav_put_float(buf, 4, vel_y);
     _mav_put_float(buf, 8, rad_z);
+    _mav_put_float(buf, 12, ext_1);
+    _mav_put_float(buf, 16, ext_2);
+    _mav_put_uint32_t(buf, 20, ext_3);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_VELOCITY, buf, MAVLINK_MSG_ID_VELOCITY_MIN_LEN, MAVLINK_MSG_ID_VELOCITY_LEN, MAVLINK_MSG_ID_VELOCITY_CRC);
 #else
@@ -202,6 +241,9 @@ static inline void mavlink_msg_velocity_send_buf(mavlink_message_t *msgbuf, mavl
     packet->vel_x = vel_x;
     packet->vel_y = vel_y;
     packet->rad_z = rad_z;
+    packet->ext_1 = ext_1;
+    packet->ext_2 = ext_2;
+    packet->ext_3 = ext_3;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_VELOCITY, (const char *)packet, MAVLINK_MSG_ID_VELOCITY_MIN_LEN, MAVLINK_MSG_ID_VELOCITY_LEN, MAVLINK_MSG_ID_VELOCITY_CRC);
 #endif
@@ -244,6 +286,36 @@ static inline float mavlink_msg_velocity_get_rad_z(const mavlink_message_t* msg)
 }
 
 /**
+ * @brief Get field ext_1 from velocity message
+ *
+ * @return  rad/s
+ */
+static inline float mavlink_msg_velocity_get_ext_1(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_float(msg,  12);
+}
+
+/**
+ * @brief Get field ext_2 from velocity message
+ *
+ * @return  rad/s
+ */
+static inline float mavlink_msg_velocity_get_ext_2(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_float(msg,  16);
+}
+
+/**
+ * @brief Get field ext_3 from velocity message
+ *
+ * @return  rad/s
+ */
+static inline uint32_t mavlink_msg_velocity_get_ext_3(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_uint32_t(msg,  20);
+}
+
+/**
  * @brief Decode a velocity message into a struct
  *
  * @param msg The message to decode
@@ -255,6 +327,9 @@ static inline void mavlink_msg_velocity_decode(const mavlink_message_t* msg, mav
     velocity->vel_x = mavlink_msg_velocity_get_vel_x(msg);
     velocity->vel_y = mavlink_msg_velocity_get_vel_y(msg);
     velocity->rad_z = mavlink_msg_velocity_get_rad_z(msg);
+    velocity->ext_1 = mavlink_msg_velocity_get_ext_1(msg);
+    velocity->ext_2 = mavlink_msg_velocity_get_ext_2(msg);
+    velocity->ext_3 = mavlink_msg_velocity_get_ext_3(msg);
 #else
         uint8_t len = msg->len < MAVLINK_MSG_ID_VELOCITY_LEN? msg->len : MAVLINK_MSG_ID_VELOCITY_LEN;
         memset(velocity, 0, MAVLINK_MSG_ID_VELOCITY_LEN);
