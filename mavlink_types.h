@@ -56,8 +56,8 @@
 #pragma anon_unions
 #endif
 MAVPACKED(
-typedef __packed struct param_union {
-	__packed union {
+typedef struct param_union {
+	MAVPACKED(union {
 		float param_float;
 		int32_t param_int32;
 		uint32_t param_uint32;
@@ -66,7 +66,7 @@ typedef __packed struct param_union {
 		int8_t param_int8;
 		uint8_t param_uint8;
 		uint8_t bytes[4];
-	};
+	});
 	uint8_t type;
 }) mavlink_param_union_t;
 
@@ -88,7 +88,7 @@ typedef __packed struct param_union {
 #pragma anon_unions
 #endif
 MAVPACKED(
-typedef __packed struct param_union_extended {
+typedef struct param_union_extended {
     __packed union {
     __packed struct {
         uint8_t is_double:1;
@@ -107,7 +107,7 @@ typedef __packed struct param_union_extended {
     };
     uint8_t data[8];
     };
-}) mavlink_param_union_double_t;
+}__packed) mavlink_param_union_double_t;
 
 /**
  * This structure is required to make the mavlink_send_xxx convenience functions

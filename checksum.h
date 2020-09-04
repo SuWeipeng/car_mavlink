@@ -37,7 +37,7 @@ extern "C" {
  * @param data new char to hash
  * @param crcAccum the already accumulated checksum
  **/
-static inline void crc_accumulate(uint8_t data, CHECKSUM_PACKED uint16_t *crcAccum)
+static inline void crc_accumulate(uint8_t data, uint16_t *crcAccum)
 {
         /*Accumulate one byte of data into the CRC*/
         uint8_t tmp;
@@ -54,7 +54,7 @@ static inline void crc_accumulate(uint8_t data, CHECKSUM_PACKED uint16_t *crcAcc
  *
  * @param crcAccum the 16 bit X.25 CRC
  */
-static inline void crc_init(CHECKSUM_PACKED uint16_t* crcAccum)
+static inline void crc_init(uint16_t* crcAccum)
 {
         *crcAccum = X25_INIT_CRC;
 }
@@ -87,7 +87,7 @@ static inline uint16_t crc_calculate(const uint8_t* pBuffer, uint16_t length)
  * @param data new bytes to hash
  * @param crcAccum the already accumulated checksum
  **/
-static inline void crc_accumulate_buffer(CHECKSUM_PACKED uint16_t *crcAccum, const char *pBuffer, uint16_t length)
+static inline void crc_accumulate_buffer(uint16_t *crcAccum, const char *pBuffer, uint16_t length)
 {
 	const uint8_t *p = (const uint8_t *)pBuffer;
 	while (length--) {
